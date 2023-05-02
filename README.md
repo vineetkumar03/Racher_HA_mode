@@ -12,6 +12,7 @@ CREATE CLUSTER FROM RKE and RESTORE RKE ClUSTER
 Create a file in Deployment node 
 Example: rancher-cluster.yaml (Change node addresses accordingly)
 ##############################
+```
 private_registries:
   - url: docker.registry.server
     user: admin
@@ -30,11 +31,12 @@ nodes:
 services:
   etcd:
     snapshot: true
+```
 
 ***********************
 3. run rke command  where above rancher-cluster.yaml should present  (to fresh install rancher)
 
-rke up --config ./rancher-cluster.yaml
+``` rke up --config ./rancher-cluster.yaml ```
 
 a. after complition of first command kubeconfig will present in below location
 
@@ -42,12 +44,12 @@ $(pwd)/kube_config_cluster.yml
 
 so use it by default by export command
 
-export KUBECONFIG=$(pwd)/kube_config_cluster.yml
+``` export KUBECONFIG=$(pwd)/kube_config_cluster.yml ```
 
 ************************************
 4. Check Health Of Cluster 
-kubectl get pods --all-namespaces
-kubectl get nodes
+``` kubectl get pods --all-namespaces ```
+``` kubectl get nodes ```
 ***********************************
 5. Save a copy of the following files in a secure location:
 
@@ -57,8 +59,8 @@ rancher-cluster.rkestate: The Kubernetes Cluster State file, this file contains 
 
 ***************************************
 6. INSTALL RANCHER
-kubectl create namespace cattle-system
-kubectl -n cattle-system create secret tls tls-rancher-ingress --cert=tls.crt --key=tls.key
+``` kubectl create namespace cattle-system ```
+``` kubectl -n cattle-system create secret tls tls-rancher-ingress --cert=tls.crt --key=tls.key ```
 
 (tls.crt will be full chain)
 
@@ -68,15 +70,15 @@ helm repo add rancher-stable https://releases.rancher.com/server-charts/stable
 helm fetch rancher-/rancher --version=v2.5.9
 unzip it
 cd rancher
-helm install rancher rancher --version v2.5.9 --namespace cattle-system --set hostname=devrancher.cloud.gov.in --set replicas=3 --set ingress.tls.source=secret
+``` helm install rancher rancher --version v2.5.9 --namespace cattle-system --set hostname=devrancher.cloud.gov.in --set replicas=3 --set ingress.tls.source=secret ```
 *****************************************
 
 7 Set up nginx as a HA-Proxy
 
-docker run -d --restart=unless-stopped    -p 80:80 -p 443:443    -v /etc/nginx/nginx.conf:/etc/nginx/nginx.conf nginx:1.17.4-alpine
+``` docker run -d --restart=unless-stopped    -p 80:80 -p 443:443    -v /etc/nginx/nginx.conf:/etc/nginx/nginx.conf nginx:1.17.4-alpine ```
 
 /etc/nginx/nginx.conf will be as below:
-
+```
 worker_processes 2;
 worker_rlimit_nofile 40000;
 
@@ -109,7 +111,7 @@ stream {
 
 }
 
-
+```
 
 
 
@@ -124,8 +126,8 @@ stream {
 4. Change host if want to change
 
 
-kubectl get ingress --all-namespaces
-kubectl edit ingress rancher -n cattle-system
+``` kubectl get ingress --all-namespaces ```
+``` kubectl edit ingress rancher -n cattle-system ```
 
 and edit host name and enter 
 
